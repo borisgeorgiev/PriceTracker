@@ -16,7 +16,10 @@ struct FeedRowView: View {
     }
     
     private var price: String {
-        data.price.formatted(.number.precision(.fractionLength(2)))
+        if data.price.isNaN {
+            return "-.--"
+        }
+        return data.price.formatted(.number.precision(.fractionLength(2)))
     }
 
     var body: some View {

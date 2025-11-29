@@ -32,39 +32,16 @@ final class FeedViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .assign(to: &$connectionState)
         
+        let symbols = [
+            "AAPL","MSFT","NVDA","TSLA","AMZN","GOOGL","META","NFLX","AMD","INTC","BABA","ORCL","CRM","ADBE","PYPL","JPM","BAC","WMT","KO","PFE","NKE","T","VZ","UBER","LYFT","SHOP","SQ","SPOT","BP","RIO"
+          ]
+        
+        for symbol in symbols {
+            let placeholderData = PriceData(symbol: symbol, price: .nan, previousPrice: .nan)
+            data.append(placeholderData)
+        }
         // ideally these should come from a service, also should have the ability to add/remove (PricesService supports it)
-        priceService.subscribe(for: [
-            "AAPL",
-            "MSFT",
-            "NVDA",
-            "TSLA",
-            "AMZN",
-            "GOOGL",
-            "META",
-            "NFLX",
-            "AMD",
-            "INTC",
-            "BABA",
-            "ORCL",
-            "CRM",
-            "ADBE",
-            "PYPL",
-            "JPM",
-            "BAC",
-            "WMT",
-            "KO",
-            "PFE",
-            "NKE",
-            "T",
-            "VZ",
-            "UBER",
-            "LYFT",
-            "SHOP",
-            "SQ",
-            "SPOT",
-            "BP",
-            "RIO"
-          ])
+        priceService.subscribe(for: symbols)
     }
 
     func start() {
