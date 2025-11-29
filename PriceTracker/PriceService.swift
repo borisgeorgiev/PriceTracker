@@ -22,4 +22,7 @@ protocol PriceService {
     func start()
     func stop()
     
+    func subscribe(for symbols: [String])
+    func unsubscribe(for symbols: [String])
+    
 }

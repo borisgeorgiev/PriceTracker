@@ -6,16 +6,20 @@
 //
 
 import SwiftUI
+import Combine
+
+extension EnvironmentValues {
+    @Entry var priceService: PriceService = EchoPriceService()
+}
 
 struct ContentView: View {
+    
+    @Environment(\.priceService) private var priceService
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationStack {
+            FeedView(viewModel: FeedViewModel(service: priceService))
         }
-        .padding()
     }
 }
 
