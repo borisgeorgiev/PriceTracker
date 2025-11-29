@@ -11,6 +11,8 @@ import SwiftUI
 struct FeedRowView: View {
     private let data: PriceData
     
+    @State private var priceColor: Color = .primary
+    
     init(data: PriceData) {
         self.data = data
     }
@@ -32,19 +34,41 @@ struct FeedRowView: View {
             Text(price)
                 .font(.body)
                 .monospacedDigit()
-
-            switch data.changeDirection {
-            case .up:
-                Image(systemName: "arrow.up")
-                    .foregroundStyle(.green)
-            case .down:
-                Image(systemName: "arrow.down")
-                    .foregroundStyle(.red)
-            default:
-                Image(systemName: "circle")
-            }
+                .foregroundStyle(priceColor)
             
+            directionIndicator
         }
         .padding(.vertical, 8)
+        .onChange(of: data, { oldValue, newValue in
+            let color: Color
+            switch data.changeDirection {
+            case .up:
+                color = .green
+            case .down:
+                color = .red
+            case .none:
+                color = .primary
+            }
+            self.priceColor = color
+            
+            withAnimation(.easeIn(duration: 1)) {
+                priceColor = .primary
+            }
+        })
     }
+    
+    @ViewBuilder
+    private var directionIndicator: some View {
+        switch data.changeDirection {
+        case .up:
+            Image(systemName: "arrow.up")
+                .foregroundStyle(.green)
+        case .down:
+            Image(systemName: "arrow.down")
+                .foregroundStyle(.red)
+        default:
+            Image(systemName: "circle")
+        }
+    }
+    
 }

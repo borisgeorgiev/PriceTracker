@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SymbolDetailsView: View {
     @StateObject private var viewModel: SymbolDetailsViewModel
+    @State private var priceColor: Color = .primary
 
     init(data: PriceData, service: PriceService) {
         _viewModel = StateObject(wrappedValue: SymbolDetailsViewModel(data: data, service: service))
@@ -35,12 +36,27 @@ struct SymbolDetailsView: View {
             Text(viewModel.price)
                 .font(.largeTitle.weight(.semibold))
                 .monospacedDigit()
+                .foregroundStyle(priceColor)
             
             directionArrow
                 .font(.title.weight(.medium))
         }
         .padding()
         .frame(maxWidth: .infinity)
+        .onChange(of: viewModel.data) { old, new in
+            switch new.changeDirection {
+            case .up:
+                priceColor = .green
+            case .down:
+                priceColor = .red
+            case .none:
+                priceColor = .primary
+            }
+            
+            withAnimation(.easeIn(duration: 1)) {
+                priceColor = .primary
+            }
+        }
     }
     
     private var chartSection: some View {
