@@ -32,7 +32,39 @@ final class FeedViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .assign(to: &$connectionState)
         
-        priceService.subscribe(for: ["AAPL", "AMZN"])
+        // ideally these should come from a service, also should have the ability to add/remove (PricesService supports it)
+        priceService.subscribe(for: [
+            "AAPL",
+            "MSFT",
+            "NVDA",
+            "TSLA",
+            "AMZN",
+            "GOOGL",
+            "META",
+            "NFLX",
+            "AMD",
+            "INTC",
+            "BABA",
+            "ORCL",
+            "CRM",
+            "ADBE",
+            "PYPL",
+            "JPM",
+            "BAC",
+            "WMT",
+            "KO",
+            "PFE",
+            "NKE",
+            "T",
+            "VZ",
+            "UBER",
+            "LYFT",
+            "SHOP",
+            "SQ",
+            "SPOT",
+            "BP",
+            "RIO"
+          ])
     }
 
     func start() {
@@ -60,7 +92,5 @@ final class FeedViewModel: ObservableObject {
         
         let insertIndex = data.firstIndex(where: { $0.price < priceData.price }) ?? data.endIndex
         data.insert(priceData, at: insertIndex)
-        
-        print("Instruments: \(data.count)")
     }
 }

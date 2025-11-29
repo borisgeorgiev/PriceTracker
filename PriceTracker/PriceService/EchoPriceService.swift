@@ -126,9 +126,8 @@ final class EchoPriceService: PriceService {
 
     private func generateAndSendAllPrices() {
         for symbol in currentSymbols {
-            let previous = latestPrices[symbol] ?? Double.random(in: 80...300)
-            let newPrice = previous + Double.random(in: -3...3)
-
+            let previous = latestPrices[symbol] ?? Double.random(in: 50...500)
+            let newPrice = previous + previous * Double.random(in: -0.1...0.1)
             let data = PriceData(symbol: symbol,
                                  price: newPrice,
                                  previousPrice: previous)
@@ -158,6 +157,6 @@ final class EchoPriceService: PriceService {
     }
     
     private func handleError(_ error: Error) {
-        // TODO: error
+        // TODO: error - reconnect logic
     }
 }
