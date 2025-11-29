@@ -28,6 +28,9 @@ final class EchoPriceService: PriceService {
     
     private var running: Bool = false
     
+    private let encoder = JSONEncoder()
+    private let decoder = JSONDecoder()
+    
     // loopback prices
     private var timerCancellable: AnyCancellable?
     private var latestPrices: [String: Double] = [:]
@@ -96,7 +99,7 @@ final class EchoPriceService: PriceService {
     private func handle(_ message: URLSessionWebSocketTask.Message) {
         if case .string(let text) = message,
            let data = text.data(using: .utf8),
-           let message = try? JSONDecoder().decode(SocketMessage.self, from: data) {
+           let message = try? decoder.decode(SocketMessage.self, from: data) {
             switch message {
             case .subscribe(let symbols):
                 print("subscribe for: \(symbols)")
@@ -139,7 +142,7 @@ final class EchoPriceService: PriceService {
         guard let webSocket else { return }
         
         do {
-            let data = try JSONEncoder().encode(message)
+            let data = try encoder.encode(message)
             if let string = String(data: data, encoding: .utf8) {
                 webSocket.send(.string(string)) { [weak self] error in
                     if let error {
