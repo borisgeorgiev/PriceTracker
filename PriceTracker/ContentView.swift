@@ -8,10 +8,6 @@
 import SwiftUI
 import Combine
 
-extension EnvironmentValues {
-    @Entry var priceService: PriceService = EchoPriceService()
-}
-
 struct ContentView: View {
     
     @Environment(\.priceService) private var priceService
