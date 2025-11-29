@@ -14,6 +14,10 @@ struct FeedRowView: View {
     init(data: PriceData) {
         self.data = data
     }
+    
+    private var price: String {
+        data.price.formatted(.number.precision(.fractionLength(2)))
+    }
 
     var body: some View {
         HStack {
@@ -22,7 +26,7 @@ struct FeedRowView: View {
 
             Spacer()
 
-            Text(data.price.formatted(.number.precision(.fractionLength(2))))
+            Text(price)
                 .font(.body)
                 .monospacedDigit()
 

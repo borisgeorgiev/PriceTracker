@@ -24,8 +24,7 @@ struct FeedView: View {
         .listStyle(.plain)
         .navigationTitle("Prices")
         .navigationDestination(for: PriceData.self) { update in
-            // TODO: Add Details view
-            EmptyView()
+            SymbolDetailsView(data: update, service: viewModel.priceService)
         }
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {

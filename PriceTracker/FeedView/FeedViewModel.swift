@@ -15,7 +15,7 @@ final class FeedViewModel: ObservableObject {
     @Published private(set) var connectionState: ConnectionState = .disconnected
     @Published private(set) var isRunning: Bool = false
 
-    private let priceService: PriceService
+    let priceService: PriceService
     private var cancellables = Set<AnyCancellable>()
     
     init(service: PriceService) {
