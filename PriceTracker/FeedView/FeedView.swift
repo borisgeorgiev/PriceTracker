@@ -16,9 +16,9 @@ struct FeedView: View {
     }
 
     var body: some View {
-        List(viewModel.updates) { update in
-            NavigationLink(value: update) {
-                FeedRowView(data: update)
+        List(viewModel.data) { data in
+            NavigationLink(value: data) {
+                FeedRowView(data: data)
             }
         }
         .listStyle(.plain)
