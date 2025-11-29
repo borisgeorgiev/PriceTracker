@@ -37,6 +37,7 @@ struct SymbolDetailsView: View {
                 .monospacedDigit()
             
             directionArrow
+                .font(.title.weight(.medium))
         }
         .padding()
         .frame(maxWidth: .infinity)
@@ -56,10 +57,13 @@ struct SymbolDetailsView: View {
         switch viewModel.data.changeDirection {
         case .up:
             Image(systemName: "arrow.up")
+                .foregroundStyle(Color.green)
         case .down:
             Image(systemName: "arrow.down")
+                .foregroundStyle(Color.red)
         default:
             Image(systemName: "circle")
+                .foregroundStyle(Color.primary)
         }
     }
 
