@@ -45,6 +45,9 @@ struct FeedView: View {
                 .padding(.horizontal, 8)
             }
         }
+        .onAppear {
+            viewModel.start()
+        }
     }
     
 }
