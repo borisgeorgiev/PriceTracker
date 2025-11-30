@@ -7,10 +7,10 @@
 
 import Foundation
 
-enum SocketMessage: Codable {
+enum SocketMessage: Sendable {
     case subscribe(symbols: [String])
     case unsubscribe(symbols: [String])
-    case price(PriceData)
+    case prices([PriceData])
 
     private enum CodingKeys: String, CodingKey {
         case type
@@ -21,9 +21,13 @@ enum SocketMessage: Codable {
     private enum MessageType: String, Codable {
         case subscribe
         case unsubscribe
-        case price
+        case prices
     }
+    
+}
 
+nonisolated extension SocketMessage: Codable {
+    
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let type = try container.decode(MessageType.self, forKey: .type)
@@ -34,9 +38,9 @@ enum SocketMessage: Codable {
         case .unsubscribe:
             let symbols = try container.decode([String].self, forKey: .symbols)
             self = .unsubscribe(symbols: symbols)
-        case .price:
-            let price = try container.decode(PriceData.self, forKey: .payload)
-            self = .price(price)
+        case .prices:
+            let prices = try container.decode([PriceData].self, forKey: .payload)
+            self = .prices(prices)
         }
     }
 
@@ -49,9 +53,10 @@ enum SocketMessage: Codable {
         case .unsubscribe(let symbols):
             try c.encode(MessageType.unsubscribe, forKey: .type)
             try c.encode(symbols, forKey: .symbols)
-        case .price(let price):
-            try c.encode(MessageType.price, forKey: .type)
-            try c.encode(price, forKey: .payload)
+        case .prices(let prices):
+            try c.encode(MessageType.prices, forKey: .type)
+            try c.encode(prices, forKey: .payload)
         }
     }
+    
 }

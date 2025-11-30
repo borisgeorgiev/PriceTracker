@@ -25,8 +25,8 @@ final class SymbolDetailsViewModel: ObservableObject {
         self.service = service
         
         service.pricePublisher
-            .filter { [weak self] update in
-                update.symbol == self?.data.symbol
+            .compactMap { [weak self] updates in
+                updates.first(where: { $0.symbol == self?.data.symbol })
             }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] update in

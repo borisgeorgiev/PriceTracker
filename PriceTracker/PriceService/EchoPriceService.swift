@@ -8,15 +8,14 @@
 import Foundation
 import Combine
 
-@MainActor
 final class EchoPriceService: PriceService {
 
-    private let priceSubject = PassthroughSubject<PriceData, Never>()
-    var pricePublisher: AnyPublisher<PriceData, Never> {
+    nonisolated private let priceSubject = PassthroughSubject<[PriceData], Never>()
+    var pricePublisher: AnyPublisher<[PriceData], Never> {
         priceSubject.eraseToAnyPublisher()
     }
 
-    private let connectionStateSubject = CurrentValueSubject<ConnectionState, Never>(.disconnected)
+    nonisolated private let connectionStateSubject = CurrentValueSubject<ConnectionState, Never>(.disconnected)
     var connectionState: AnyPublisher<ConnectionState, Never> {
         connectionStateSubject.eraseToAnyPublisher()
     }
@@ -35,7 +34,7 @@ final class EchoPriceService: PriceService {
     private var timerCancellable: AnyCancellable?
     private var latestPrices: [String: Double] = [:]
 
-    init(session: URLSession = .shared) {
+    nonisolated init(session: URLSession = .shared) {
         self.session = session
     }
 
@@ -82,7 +81,7 @@ final class EchoPriceService: PriceService {
     private func receive() {
         webSocket?.receive { [weak self] result in
             guard let self else { return }
-            Task { @MainActor in
+            Task { @PriceServiceActor in
                 switch result {
                 case .success(let message):
                     self.handle(message)
@@ -105,7 +104,7 @@ final class EchoPriceService: PriceService {
                 print("subscribe for: \(symbols)")
             case .unsubscribe(let symbols):
                 print("unsubscribe for: \(symbols)")
-            case .price(let data):
+            case .prices(let data):
                 priceSubject.send(data)
             }
         }
@@ -133,7 +132,7 @@ final class EchoPriceService: PriceService {
                                  previousPrice: previous)
 
             latestPrices[symbol] = newPrice
-            send(.price(data))
+            send(.prices([data]))
         }
     }
 
@@ -145,8 +144,8 @@ final class EchoPriceService: PriceService {
             if let string = String(data: data, encoding: .utf8) {
                 webSocket.send(.string(string)) { [weak self] error in
                     if let error {
-                        DispatchQueue.main.async {
-                            self?.handleError(error)
+                        Task {
+                            await self?.handleError(error)
                         }
                     }
                 }

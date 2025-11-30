@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct PriceData: Identifiable, Hashable, Sendable, Codable {
+nonisolated struct PriceData: Identifiable, Hashable, Sendable, Codable {
     enum Change {
         case up, down, none
     }

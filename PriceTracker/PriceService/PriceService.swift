@@ -9,15 +9,20 @@
 import Foundation
 import Combine
 
+@globalActor actor PriceServiceActor {
+    static let shared = PriceServiceActor()
+}
+
 enum ConnectionState: Equatable {
     case connected
     case disconnected
 }
 
+@PriceServiceActor
 protocol PriceService {
     
-    var pricePublisher: AnyPublisher<PriceData, Never> { get }
-    var connectionState: AnyPublisher<ConnectionState, Never> { get }
+    nonisolated var pricePublisher: AnyPublisher<[PriceData], Never> { get }
+    nonisolated var connectionState: AnyPublisher<ConnectionState, Never> { get }
     
     func start()
     func stop()

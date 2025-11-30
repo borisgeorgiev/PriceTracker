@@ -41,17 +41,23 @@ final class FeedViewModel: ObservableObject {
             data.append(placeholderData)
         }
         // ideally these should come from a service, also should have the ability to add/remove (PricesService supports it)
-        priceService.subscribe(for: symbols)
+        Task {
+            await priceService.subscribe(for: symbols)
+        }
     }
 
     func start() {
-        isRunning = true
-        priceService.start()
+        Task { @MainActor in
+            await priceService.start()
+            isRunning = true
+        }
     }
 
     func stop() {
-        isRunning = false
-        priceService.stop()
+        Task { @MainActor in
+            isRunning = false
+            await priceService.stop()
+        }
     }
 
     func toggleService() {
@@ -62,12 +68,18 @@ final class FeedViewModel: ObservableObject {
         }
     }
     
-    private func updateWithData(_ priceData: PriceData) {
-        if let index = data.firstIndex(where: { $0.symbol == priceData.symbol }) {
-            data.remove(at: index)
+    private func updateWithData(_ pricesData: [PriceData]) {
+        var updatedData = data
+        for priceData in pricesData {
+            if let index = updatedData.firstIndex(where: { $0.symbol == priceData.symbol }) {
+                updatedData.remove(at: index)
+            }
+            
+            let insertIndex = updatedData.firstIndex(where: { $0.price < priceData.price }) ?? updatedData.endIndex
+            updatedData.insert(priceData, at: insertIndex)
         }
         
-        let insertIndex = data.firstIndex(where: { $0.price < priceData.price }) ?? data.endIndex
-        data.insert(priceData, at: insertIndex)
+        data = updatedData
     }
 }
+
