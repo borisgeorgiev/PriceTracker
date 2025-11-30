@@ -22,7 +22,10 @@
 - The view models are isolated using MainActor as they trigger UI chages.
 - The project uses Swift6 so proper use of concurrency is strictly enforced.
 
-## What's not implemented
-- Error handling and reconnect logic in EchoPriceService.
-- There was no description of the service so I added previousPrice to the prices message. Alternatively the service has to keep the previous price to build the PriceData objects.
-- Integration/UI tests.
+## TESTS
+- Integration tests for the business logic (including view models and service).
+
+## Other
+- Error handling and reconnect logic in EchoPriceService not implemented - should have a simple reconnect logic with standoff delay on error.
+- UI tests not implemented.
+- There was no description of the service so I added previousPrice to the price payload. Alternatively the service has to keep the previous price to build the PriceData objects.

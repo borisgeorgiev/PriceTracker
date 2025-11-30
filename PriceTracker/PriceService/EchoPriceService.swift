@@ -134,8 +134,8 @@ final class EchoPriceService: PriceService {
             send(.prices([data]))
         }
     }
-
-    private func send(_ message: SocketMessage) {
+    
+    func send(_ message: SocketMessage) {
         guard let webSocket else { return }
         
         do {
