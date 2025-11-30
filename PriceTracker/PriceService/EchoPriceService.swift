@@ -51,6 +51,8 @@ final class EchoPriceService: PriceService {
         send(.unsubscribe(symbols: Array(currentSymbols).map { $0.uppercased() }))
         running = false
         
+        timerCancellable?.cancel()
+        timerCancellable = nil
         webSocket?.cancel(with: .normalClosure, reason: nil)
         connectionStateSubject.send(.disconnected)
     }
@@ -116,9 +118,6 @@ final class EchoPriceService: PriceService {
         timerCancellable = Timer.publish(every: 2, on: .main, in: .common)
             .autoconnect()
             .sink { [weak self] _ in
-                guard self?.running == true else {
-                    return
-                }
                 self?.generateAndSendAllPrices()
             }
     }
